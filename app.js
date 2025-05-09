@@ -86,6 +86,10 @@ app.get("/delete", (req, res) => {
   res.sendFile(path.join(__dirname, "views", "delete.html"));
 });
 
+app.get("/detail", (req, res) => {
+  res.sendFile(path.join(__dirname, "views", "detail.html"));
+});
+
 // API routes
 app.get("/api/drinks", async (req, res) => {
   try {
