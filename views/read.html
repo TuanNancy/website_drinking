@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Drinks</title>
+    <link rel="stylesheet" href="/page/css/styles.css">
+</head>
+
+<body>
+    <header>
+        <h1>View Drinks</h1>
+        <nav>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/create">Add New Drink</a></li>
+                <li><a href="/read">View Drinks</a></li>
+                <li><a href="/update">Update Drink</a></li>
+                <li><a href="/delete">Delete Drink</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <!-- Phần tìm kiếm -->
+        <section class="search-section">
+            <div class="search-container">
+                <input type="text" id="searchInput" placeholder="Tìm kiếm theo tên sản phẩm...">
+            </div>
+        </section>
+
+        <!-- Danh sách đồ uống -->
+        <div class="drinks-grid" id="drinksList"></div>
+
+        <!-- Phân trang -->
+        <div class="pagination-section">
+            <button onclick="changePage(currentPage - 1)" id="prevPage">Previous</button>
+            <span id="pageInfo">Page 1 of 1</span>
+            <button onclick="changePage(currentPage + 1)" id="nextPage">Next</button>
+        </div>
+    </main>
+
+    <!-- Modal for image preview -->
+    <div id="imageModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <img id="modalImage" src="" alt="Preview">
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 Drink Shop. All rights reserved.</p>
+    </footer>
+
+    <script src="/js/script.js"></script>
+</body>
+
+</html>

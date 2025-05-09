@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Drink</title>
+    <link rel="stylesheet" href="/page/css/styles.css">
+</head>
+
+<body>
+    <header>
+        <h1>Update Drink</h1>
+        <nav>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/create">Add New Drink</a></li>
+                <li><a href="/read">View Drinks</a></li>
+                <li><a href="/update">Update Drink</a></li>
+                <li><a href="/delete">Delete Drink</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <div id="selectDrink">
+            <label for="drinkSelect">Select Drink to Update:</label>
+            <select id="drinkSelect"></select>
+            <button id="loadDrinkBtn">Load Drink</button>
+        </div>
+
+        <form id="updateDrinkForm" style="display: none;">
+            <input type="hidden" id="updateId">
+
+            <div class="form-group">
+                <label for="updateName">Drink Name:</label>
+                <input type="text" id="updateName" name="name" required>
+            </div>
+
+            <div class="form-group">
+                <label for="updateSize">Size:</label>
+                <select id="updateSize" name="size" required>
+                    <option value="S">Small (S)</option>
+                    <option value="M">Medium (M)</option>
+                    <option value="L">Large (L)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="updatePrice">Price:</label>
+                <input type="number" id="updatePrice" name="price" required>
+            </div>
+
+            <div class="form-group">
+                <label>Attributes:</label>
+                <div id="updateAttributesContainer"></div>
+                <button type="button" id="addUpdateAttr">Add Attribute</button>
+            </div>
+
+            <button type="submit">Update Drink</button>
+        </form>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Drink Shop. All rights reserved.</p>
+    </footer>
+
+    <script src="/js/script.js"></script>
+</body>
+
+</html>
