@@ -347,3 +347,15 @@ button:hover {
 .back-button:hover {
     background: #444;
 }
+
+/* Trong file CSS */
+.message-success {
+  display: block;
+  background-color: #d4edda;
+  color: #155724;
+}
+.message-error {
+  display: block;
+  background-color: #f8d7da;
+  color: #721c24;
+}

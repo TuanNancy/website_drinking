@@ -69,7 +69,7 @@ async function displayDrinks() {
                     ? drink.images
                         .map(
                           (image) => `
-                        <img src="${image}" alt="${drink.name}" onclick="event.stopPropagation(); openModal('${image}')">
+                        <img src="${image}" alt="${drink.name}">
                     `
                         )
                         .join("")
@@ -315,9 +315,7 @@ async function setupDeleteDrink() {
 
       if (response.ok) {
         messageDiv.textContent = "Drink deleted successfully!";
-        messageDiv.style.display = "block";
-        messageDiv.style.backgroundColor = "#d4edda";
-        messageDiv.style.color = "#155724";
+        messageDiv.className = "message-success";
 
         // Làm mới dropdown
         drinkSelect.innerHTML = "";
@@ -334,42 +332,9 @@ async function setupDeleteDrink() {
     } catch (error) {
       console.error("Error:", error);
       messageDiv.textContent = "Error deleting drink";
-      messageDiv.style.display = "block";
-      messageDiv.style.backgroundColor = "#f8d7da";
-      messageDiv.style.color = "#721c24";
+      messageDiv.className = "message-error";
     }
   });
-}
-
-// Hàm xử lý modal hình ảnh
-function setupImageModal() {
-  const modal = document.getElementById("imageModal");
-  const modalImg = document.getElementById("modalImage");
-  const closeModal = document.querySelector(".close-modal");
-
-  if (!modal || !modalImg || !closeModal) return;
-
-  window.openModal = function (imageSrc) {
-    modal.style.display = "block";
-    modalImg.src = imageSrc;
-  };
-
-  closeModal.onclick = function () {
-    modal.style.display = "none";
-  };
-
-  window.onclick = function (event) {
-    if (event.target == modal) {
-      modal.style.display = "none";
-    }
-  };
-}
-
-// Hàm chuyển trang
-function changePage(page) {
-  if (page < 1 || page > totalPages) return;
-  currentPage = page;
-  displayDrinks();
 }
 
 // Hàm xử lý trang chi tiết sản phẩm
@@ -399,7 +364,7 @@ async function displayDrinkDetail() {
                         ? drink.images
                             .map(
                               (image) => `
-                            <img src="${image}" alt="${drink.name}" onclick="openModal('${image}')">
+                            <img src="${image}" alt="${drink.name}">
                         `
                             )
                             .join("")
@@ -433,6 +398,13 @@ async function displayDrinkDetail() {
   }
 }
 
+// Hàm chuyển trang
+function changePage(page) {
+  if (page < 1 || page > totalPages) return;
+  currentPage = page;
+  displayDrinks();
+}
+
 // Khởi tạo các chức năng khi trang được load
 document.addEventListener("DOMContentLoaded", () => {
   const searchInput = document.getElementById("searchInput");
@@ -455,5 +427,4 @@ document.addEventListener("DOMContentLoaded", () => {
   setupAddDrinkForm();
   setupUpdateDrinkForm();
   setupDeleteDrink();
-  setupImageModal();
 });
