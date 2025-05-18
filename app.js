@@ -58,6 +58,19 @@ const drinkSchema = new mongoose.Schema({
   ],
 });
 
+const userSchema = new mongoose.Schema({
+  username: String,
+  password: String,
+  email: String,
+  role: {
+    type: String,
+    enum: ["user", "admin"],
+    default: "user",
+  },
+});
+
+const User = mongoose.model("User", userSchema);
+
 const Drink = mongoose.model("Drink", drinkSchema);
 
 // Middleware
