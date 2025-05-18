@@ -232,6 +232,15 @@ async function setupUpdateDrinkForm() {
           addAttributeField(attr.key, attr.value);
         });
 
+        // Hiển thị hình ảnh hiện tại
+        const currentImagesDiv = document.getElementById("currentImages");
+        currentImagesDiv.innerHTML = "";
+        if (drink.images && drink.images.length > 0) {
+          drink.images.forEach((img) => {
+            currentImagesDiv.innerHTML += `<img src="${img}" style="width:60px;margin:2px;">`;
+          });
+        }
+
         form.style.display = "block";
         form.scrollIntoView({ behavior: "smooth" });
       } catch (error) {
@@ -245,32 +254,34 @@ async function setupUpdateDrinkForm() {
     addAttributeField("", "");
   });
 
-  // Xử lý submit form (giữ nguyên như cũ)
+  // Xử lý submit form
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
+
+    const formData = new FormData();
+    formData.append("name", form.updateName.value);
+    formData.append("size", form.updateSize.value);
+    formData.append("price", form.updatePrice.value);
+
+    // Attributes
     const attributes = [];
     document.querySelectorAll(".update-attribute").forEach((attrEl) => {
       const key = attrEl.querySelector(".update-attr-key").value;
       const value = attrEl.querySelector(".update-attr-value").value;
-      if (key && value) {
-        attributes.push({ key, value });
-      }
+      if (key && value) attributes.push({ key, value });
     });
+    formData.append("attributes", JSON.stringify(attributes));
 
-    const drinkData = {
-      name: form.updateName.value,
-      size: form.updateSize.value,
-      price: Number(form.updatePrice.value),
-      attributes,
-    };
+    // Files
+    const files = document.getElementById("updateImages").files;
+    for (let i = 0; i < files.length; i++) {
+      formData.append("images", files[i]);
+    }
 
     try {
       const response = await fetch(`/api/drinks/${form.updateId.value}`, {
         method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(drinkData),
+        body: formData,
       });
 
       if (response.ok) {

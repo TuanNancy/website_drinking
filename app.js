@@ -140,13 +140,22 @@ app.post("/api/drinks", async (req, res) => {
   }
 });
 
-app.put("/api/drinks/:id", async (req, res) => {
+app.put("/api/drinks/:id", upload.array("images", 5), async (req, res) => {
   try {
-    const updatedDrink = await Drink.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      { new: true }
-    );
+    const drink = await Drink.findById(req.params.id);
+    if (!drink) return res.status(404).json({ message: "Drink not found" });
+
+    drink.name = req.body.name;
+    drink.size = req.body.size;
+    drink.price = req.body.price;
+    drink.attributes = JSON.parse(req.body.attributes);
+
+    // Lưu đường dẫn ảnh mới nếu có upload
+    if (req.files && req.files.length > 0) {
+      drink.images = req.files.map((file) => `/images/${file.filename}`);
+    }
+
+    const updatedDrink = await drink.save();
     res.json(updatedDrink);
   } catch (err) {
     res.status(400).json({ message: err.message });
@@ -166,6 +175,8 @@ app.delete("/api/drinks/:id", async (req, res) => {
 app.use((req, res) => {
   res.status(404).send("404 - Page Not Found");
 });
+
+app.use("/images", express.static(path.join(__dirname, "public", "images")));
 
 // Khởi động server
 const PORT = process.env.PORT || 3000;
