@@ -169,52 +169,75 @@ async function setupAddDrinkForm() {
 
 // Hàm cập nhật đồ uống
 async function setupUpdateDrinkForm() {
-  const drinkSelect = document.getElementById("drinkSelect");
-  const loadBtn = document.getElementById("loadDrinkBtn");
+  const drinksList = document.getElementById("updateDrinksList");
   const form = document.getElementById("updateDrinkForm");
   const attributesContainer = document.getElementById(
     "updateAttributesContainer"
   );
 
-  if (!drinkSelect || !loadBtn || !form) return;
+  if (!drinksList || !form) return;
 
-  // Đổ dữ liệu vào dropdown
+  // Lấy danh sách sản phẩm
   const drinks = await fetchDrinks();
-  drinks.forEach((drink) => {
-    const option = document.createElement("option");
-    option.value = drink._id;
-    option.textContent = `${drink.name} (${drink.size}) - ${drink.price} VND`;
-    drinkSelect.appendChild(option);
-  });
 
-  // Load drink data khi click nút
-  loadBtn.addEventListener("click", async () => {
-    const drinkId = drinkSelect.value;
-    if (!drinkId) return;
+  // Hiển thị sản phẩm dạng card
+  drinksList.innerHTML = drinks
+    .map(
+      (drink) => `
+      <div class="drink-card">
+        <div class="drink-images">
+          ${
+            drink.images && drink.images.length > 0
+              ? drink.images
+                  .map(
+                    (image) =>
+                      `<img src="${image}" alt="${drink.name}" style="width:80px;">`
+                  )
+                  .join("")
+              : "<p>No images</p>"
+          }
+        </div>
+        <div class="drink-info">
+          <h3>${drink.name}</h3>
+          <p>Size: ${drink.size}</p>
+          <p class="drink-price">${drink.price} VND</p>
+          <button class="update-btn" data-id="${
+            drink._id
+          }">Cập nhật sản phẩm</button>
+        </div>
+      </div>
+    `
+    )
+    .join("");
 
-    try {
-      const response = await fetch(`/api/drinks/${drinkId}`);
-      if (!response.ok) throw new Error("Drink not found");
+  // Bắt sự kiện cho các nút cập nhật
+  drinksList.querySelectorAll(".update-btn").forEach((btn) => {
+    btn.addEventListener("click", async (e) => {
+      e.preventDefault();
+      const drinkId = btn.getAttribute("data-id");
+      try {
+        const response = await fetch(`/api/drinks/${drinkId}`);
+        if (!response.ok) throw new Error("Drink not found");
+        const drink = await response.json();
 
-      const drink = await response.json();
+        // Điền dữ liệu vào form
+        document.getElementById("updateId").value = drink._id;
+        document.getElementById("updateName").value = drink.name;
+        document.getElementById("updateSize").value = drink.size;
+        document.getElementById("updatePrice").value = drink.price;
 
-      // Điền dữ liệu vào form
-      document.getElementById("updateId").value = drink._id;
-      document.getElementById("updateName").value = drink.name;
-      document.getElementById("updateSize").value = drink.size;
-      document.getElementById("updatePrice").value = drink.price;
+        // Điền attributes
+        attributesContainer.innerHTML = "";
+        (drink.attributes || []).forEach((attr) => {
+          addAttributeField(attr.key, attr.value);
+        });
 
-      // Điền attributes
-      attributesContainer.innerHTML = "";
-      drink.attributes.forEach((attr) => {
-        addAttributeField(attr.key, attr.value);
-      });
-
-      form.style.display = "block";
-    } catch (error) {
-      console.error("Error loading drink:", error);
-      alert("Error loading drink data");
-    }
+        form.style.display = "block";
+        form.scrollIntoView({ behavior: "smooth" });
+      } catch (error) {
+        alert("Error loading drink data");
+      }
+    });
   });
 
   // Thêm attribute field mới
@@ -222,11 +245,9 @@ async function setupUpdateDrinkForm() {
     addAttributeField("", "");
   });
 
-  // Xử lý submit form
+  // Xử lý submit form (giữ nguyên như cũ)
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
-
-    // Lấy các attributes
     const attributes = [];
     document.querySelectorAll(".update-attribute").forEach((attrEl) => {
       const key = attrEl.querySelector(".update-attr-key").value;
@@ -259,7 +280,6 @@ async function setupUpdateDrinkForm() {
         throw new Error("Failed to update drink");
       }
     } catch (error) {
-      console.error("Error:", error);
       alert("Error updating drink");
     }
   });
@@ -275,7 +295,6 @@ async function setupUpdateDrinkForm() {
     `;
     attributesContainer.appendChild(attrDiv);
 
-    // Thêm sự kiện xóa attribute
     attrDiv
       .querySelector(".remove-update-attr")
       .addEventListener("click", () => {
